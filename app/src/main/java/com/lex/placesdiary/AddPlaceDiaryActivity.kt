@@ -8,14 +8,21 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.lex.placesdiary.databinding.ActivityAddPlaceDiaryBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,6 +33,10 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
     private var cal = Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
+
+    companion object{
+        private const val CAMERA_REQUEST_CODE = 101
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,12 +77,36 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
                 pictureDialog.setItems(pictureDialogItems){ dialog, which ->
                     when(which){
                         0 -> choosePhotoFromGallery()
-                        1 -> Toast.makeText(this@AddPlaceDiaryActivity,"Coming Soon",Toast.LENGTH_SHORT).show()
+                        1 -> capturePhotoFromCamera()
                     }
                 }
                 pictureDialog.show()
             }
         }
+    }
+
+    private fun capturePhotoFromCamera() {
+        Dexter.withActivity(this).withPermission(
+            Manifest.permission.CAMERA
+        ).withListener(object : PermissionListener {
+            override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivity(intent)
+            }
+
+            override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                Toast.makeText(this@AddPlaceDiaryActivity,"Camera permission is not granted",Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onPermissionRationaleShouldBeShown(
+                permission: PermissionRequest?,
+                token: PermissionToken?
+            ) {
+                //token!!.continuePermissionRequest();
+                showRationaleDialogForPermission()
+            }
+
+        }).onSameThread().check()
     }
 
     private fun choosePhotoFromGallery() {
@@ -117,4 +152,5 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
         binding?.etDatePlace?.setText(sdf.format(cal.time).toString())
     }
+
 }
