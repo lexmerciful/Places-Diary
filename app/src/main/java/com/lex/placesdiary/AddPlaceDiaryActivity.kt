@@ -9,7 +9,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -18,11 +17,8 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
 import com.lex.placesdiary.databinding.ActivityAddPlaceDiaryBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +81,7 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun capturePhotoFromCamera() {
+    /*private fun capturePhotoFromCamera() {
         Dexter.withActivity(this).withPermission(
             Manifest.permission.CAMERA
         ).withListener(object : PermissionListener {
@@ -107,7 +103,7 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         }).onSameThread().check()
-    }
+    }*/
 
     private fun choosePhotoFromGallery() {
         Dexter.withActivity(this).withPermissions(
@@ -153,4 +149,16 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         binding?.etDatePlace?.setText(sdf.format(cal.time).toString())
     }
 
+    private fun capturePhotoFromCamera(){
+        ImagePicker.with(this)
+            .cameraOnly()	//User can only capture image using Camera
+            .compress(2048)
+            .crop()
+            .setImageProviderInterceptor { imageProvider -> //Intercept ImageProvider
+                Log.e("ImagePicker", "Selected ImageProvider: "+imageProvider.name)
+            }
+            //  Path: /storage/sdcard0/Android/data/package/files/Pictures
+            .saveDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!)
+            .start(CAMERA_REQUEST_CODE)
+    }
 }
