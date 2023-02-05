@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Places Diary</string>
+    <string name="et_hint_title">Title</string>
+    <string name="btn_save_text">SAVE</string>
+    <string name="tv_add_image_text">ADD IMAGE</string>
+    <string name="et_location_hint">Location</string>
+    <string name="et_date_hint">Date</string>
+    <string name="et_description_hint">Description</string>
+</resources>
