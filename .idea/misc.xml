@@ -9,7 +9,10 @@
         <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/drawable/item_add_imageview_border.xml" value="0.1945" />
         <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/drawable/item_button_background.xml" value="0.1945" />
         <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/activity_add_happy_place.xml" value="0.25" />
-        <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/activity_add_place_diary.xml" value="0.20416666666666666" />
+        <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/activity_places_diary_details.xml" value="0.20416666666666666" />
+        <entry key="..\:/JavaPogram/PlacesDiary/app/src/main/res/layout/places_diary_rv_item.xml" value="0.25" />
       </map>
     </option>
   </component>

@@ -7,6 +7,20 @@
     <dimen name="btn_save_marginEndStart">10dp</dimen>
     <dimen name="btn_save_marginTop">50dp</dimen>
     <dimen name="btn_save_corner_radius">10dp</dimen>
-    <dimen name="imageview_add_image_corner_radius">10dp</dimen>
+    <dimen name="imageview_add_image_corner_radius">20dp</dimen>
     <dimen name="textview_add_image_padding">10dp</dimen>
+    <dimen name="imageview_add_image_margin">10dp</dimen>
+    <dimen name="textview_no_places_record_textSize">18sp</dimen>
+    <dimen name="cardview_item_margin">10dp</dimen>
+    <dimen name="cardview_item_elevation">10dp</dimen>
+    <dimen name="cardview_item_cornerRadius">10dp</dimen>
+    <dimen name="item_edittext_title_margin">5dp</dimen>
+    <dimen name="item_edittext_description_margin">5dp</dimen>
+    <dimen name="imageview_item_heightSize">200dp</dimen>
+    <dimen name="item_edittext_title_textSize">18sp</dimen>
+    <dimen name="item_edittext_description_textSize">16sp</dimen>
+    <dimen name="item_edittext_date_margin">5dp</dimen>
+    <dimen name="item_edittext_date_textSize">10sp</dimen>
+    <dimen name="cardview_item_contentPadding">10dp</dimen>
+    <dimen name="layout_places_diary_rv_item_marginBottom">5dp</dimen>
 </resources>

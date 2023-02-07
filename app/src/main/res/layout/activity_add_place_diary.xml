@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddPlaceDiaryActivity">
+    tools:context=".activities.AddPlaceDiaryActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarAddPlace"
+        android:id="@+id/toolbarPlaceDetails"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/toolbarAddPlace"
+        app:layout_constraintTop_toBottomOf="@id/toolbarPlaceDetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -50,7 +50,7 @@
                     android:textColorHint="@color/secondaryTextColor"
                     android:textSize="@dimen/edittext_text_size"
                     android:hint="@string/et_hint_title"
-                    android:inputType="textCapCharacters"/>
+                    android:inputType="textCapWords"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/edittext_text_size"
                     android:hint="@string/et_description_hint"
-                    android:inputType="textCapCharacters"/>
+                    android:inputType="textCapSentences"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/edittext_text_size"
                     android:hint="@string/et_location_hint"
-                    android:inputType="textPostalAddress"/>
+                    android:inputType="textCapSentences"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,7 +126,7 @@
                 android:id="@+id/ivAddImage"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/imageview_add_image_margin"
                 android:scaleType="centerCrop"
                 android:background="@drawable/item_add_imageview_border"
                 android:src="@drawable/ic_add_image"

@@ -6,4 +6,6 @@
     <string name="et_location_hint">Location</string>
     <string name="et_date_hint">Date</string>
     <string name="et_description_hint">Description</string>
+    <string name="textview_no_places_record_text">Places Diary is empty. Kindly add to diary</string>
+    <string name="imageview_item_contentDescription">Image</string>
 </resources>

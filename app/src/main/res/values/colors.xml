@@ -12,6 +12,7 @@
     <color name="colorPrimaryDark">#2A4D69</color>
     <color name="colorAccent">#ADCBE3</color>
     <color name="lightGrey">#C4C4C4</color>
+    <color name="lighterGrey">#F1F1F1</color>
 
     <color name="primaryTextColor">#212121</color>
     <color name="secondaryTextColor">#9AA2AF</color>

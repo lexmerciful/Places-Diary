@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.github.dhaval2404:imagepicker:2.1'
     implementation 'com.karumi:dexter:6.0.1'
     implementation 'com.google.android.material:material:1.8.0'
+    debugImplementation "com.infinum.dbinspector:dbinspector:5.4.8"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'

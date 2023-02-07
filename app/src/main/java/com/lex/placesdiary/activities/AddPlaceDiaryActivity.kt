@@ -1,6 +1,6 @@
-package com.lex.placesdiary
+package com.lex.placesdiary.activities
 
-import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
@@ -14,12 +14,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.lex.placesdiary.R
+import com.lex.placesdiary.database.DatabaseHelper
 import com.lex.placesdiary.databinding.ActivityAddPlaceDiaryBinding
+import com.lex.placesdiary.models.PlacesDiaryModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +28,10 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
     private var cal = Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
 
+    private var mLatitude : Double = 0.0
+    private var mLongitude : Double = 0.0
+
+    private var saveImageToStorageUri: Uri? = null
     companion object{
         private const val CAMERA_REQUEST_CODE = 101
     }
@@ -52,8 +54,11 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
 
             updateDateInView()
         }
+
+        updateDateInView()
         binding?.etDatePlace?.setOnClickListener(this)
         binding?.tvAddImage?.setOnClickListener(this)
+        binding?.btnSave?.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
@@ -72,11 +77,47 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
                     "Capture photo from camera")
                 pictureDialog.setItems(pictureDialogItems){ dialog, which ->
                     when(which){
-                        0 -> choosePhotoFromGallery()
-                        1 -> capturePhotoFromCamera()
+                        0 -> {
+                            addPhotoFromStorageOrCamera(which)
+                        }
+                        1 -> {
+                            addPhotoFromStorageOrCamera(which)
+                        }
                     }
                 }
                 pictureDialog.show()
+            }
+
+            binding?.btnSave ->{
+                if (binding?.etTitlePlace?.text?.isEmpty() == true){
+                    Toast.makeText(this, "Please enter title", Toast.LENGTH_SHORT).show()
+                }else if (binding?.etDescriptionPlace?.text?.isEmpty() == true){
+                    Toast.makeText(this, "Please enter description", Toast.LENGTH_SHORT).show()
+                }else if (binding?.etLocationPlace?.text?.isEmpty() == true){
+                    Toast.makeText(this, "Please enter location", Toast.LENGTH_SHORT).show()
+                }else if (saveImageToStorageUri == null){
+                    Toast.makeText(this, "Please add image!", Toast.LENGTH_SHORT).show()
+                }else{
+                    val placeDiaryModel = PlacesDiaryModel(
+                        0,
+                        binding?.etTitlePlace?.text!!.toString(),
+                        binding?.etDescriptionPlace?.text!!.toString(),
+                        saveImageToStorageUri.toString(),
+                        binding?.etDatePlace?.text!!.toString(),
+                        binding?.etLocationPlace?.text!!.toString(),
+                        mLatitude,
+                        mLongitude
+                    )
+                    val dbHelper = DatabaseHelper(this)
+                    val addPlaceDiary = dbHelper.addPlaceDiary(placeDiaryModel)
+
+                    if (addPlaceDiary >= 0){
+                        Toast.makeText(this, "The place diary details are inserted successfully", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "The place diary details failed to insert! $addPlaceDiary", Toast.LENGTH_SHORT).show()
+                    }
+                    finish()
+                }
             }
         }
     }
@@ -105,7 +146,7 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         }).onSameThread().check()
     }*/
 
-    private fun choosePhotoFromGallery() {
+    /*private fun choosePhotoFromGallery() {
         Dexter.withActivity(this).withPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -120,7 +161,7 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
                 showRationaleDialogForPermission()
             }
         }).onSameThread().check()
-    }
+    }*/
 
     private fun showRationaleDialogForPermission() {
         val dialog = AlertDialog.Builder(this)
@@ -149,16 +190,44 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         binding?.etDatePlace?.setText(sdf.format(cal.time).toString())
     }
 
-    private fun capturePhotoFromCamera(){
-        ImagePicker.with(this)
-            .cameraOnly()	//User can only capture image using Camera
-            .compress(2048)
-            .crop()
-            .setImageProviderInterceptor { imageProvider -> //Intercept ImageProvider
-                Log.e("ImagePicker", "Selected ImageProvider: "+imageProvider.name)
+    private fun addPhotoFromStorageOrCamera(whichSelected: Int){
+        val imagePicker = ImagePicker.with(this)
+                if (whichSelected == 0){
+                    imagePicker.galleryOnly()
+                        .compress(2048)
+                        .crop()
+                        //  Path: /storage/sdcard0/Android/data/com.lex.placesdiary/files/Pictures
+                        .saveDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!)
+                        .start()
+                }else{
+                    imagePicker.cameraOnly()	//User can only capture image using Camera
+                        .compress(2048)
+                        .crop()
+                        //  Path: /storage/sdcard0/Android/data/com.lex.placesdiary/files/Pictures
+                        .saveDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!)
+                        .start(CAMERA_REQUEST_CODE)
+                }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                //Image Uri will not be null for RESULT_OK
+                val uri: Uri = data?.data!!
+
+                saveImageToStorageUri = uri
+                Log.e("SAVED TO ", uri.toString())
+
+                binding?.ivAddImage?.setImageURI(uri)
             }
-            //  Path: /storage/sdcard0/Android/data/package/files/Pictures
-            .saveDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!)
-            .start(CAMERA_REQUEST_CODE)
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
