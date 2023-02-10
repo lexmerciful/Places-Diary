@@ -31,6 +31,8 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
     private var mLatitude : Double = 0.0
     private var mLongitude : Double = 0.0
 
+    private var mPlacesDiaryDetails : PlacesDiaryModel? = null
+
     private var saveImageToStorageUri: Uri? = null
     companion object{
         private const val CAMERA_REQUEST_CODE = 101
@@ -47,6 +49,11 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
             onBackPressed()
         }
 
+        //Check if an intent Extra has been passed and then pass as the model if true
+        if (intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){
+            mPlacesDiaryDetails = intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as PlacesDiaryModel
+        }
+
         dateSetListener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month)
@@ -56,6 +63,24 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         updateDateInView()
+
+        //Update the addPlace fields to update fields with existing entry if not null
+        if (mPlacesDiaryDetails != null){
+            supportActionBar?.title = "Edit Place Diary"
+
+            binding?.etTitlePlace?.setText(mPlacesDiaryDetails!!.title)
+            binding?.etDescriptionPlace?.setText(mPlacesDiaryDetails!!.description)
+            binding?.etDatePlace?.setText(mPlacesDiaryDetails!!.date)
+            binding?.etLocationPlace?.setText(mPlacesDiaryDetails!!.location)
+            mLatitude = mPlacesDiaryDetails!!.latitude
+            mLongitude = mPlacesDiaryDetails!!.longitude
+
+            saveImageToStorageUri = Uri.parse(mPlacesDiaryDetails!!.image)
+            binding?.ivAddImage?.setImageURI(saveImageToStorageUri)
+
+            binding?.btnSave?.text = "UPDATE"
+        }
+
         binding?.etDatePlace?.setOnClickListener(this)
         binding?.tvAddImage?.setOnClickListener(this)
         binding?.btnSave?.setOnClickListener(this)
@@ -99,7 +124,7 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.makeText(this, "Please add image!", Toast.LENGTH_SHORT).show()
                 }else{
                     val placeDiaryModel = PlacesDiaryModel(
-                        0,
+                        if (mPlacesDiaryDetails == null) 0 else mPlacesDiaryDetails!!.id,
                         binding?.etTitlePlace?.text!!.toString(),
                         binding?.etDescriptionPlace?.text!!.toString(),
                         saveImageToStorageUri.toString(),
@@ -109,14 +134,26 @@ class AddPlaceDiaryActivity : AppCompatActivity(), View.OnClickListener {
                         mLongitude
                     )
                     val dbHelper = DatabaseHelper(this)
-                    val addPlaceDiary = dbHelper.addPlaceDiary(placeDiaryModel)
 
-                    if (addPlaceDiary >= 0){
-                        Toast.makeText(this, "The place diary details are inserted successfully", Toast.LENGTH_SHORT).show()
+                    //Check to determine if this is a update or save new request
+                    if (mPlacesDiaryDetails == null){
+                        val addPlaceDiary = dbHelper.addPlaceDiary(placeDiaryModel)
+
+                        if (addPlaceDiary > 0){
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }else{
+                            Toast.makeText(this, "The place diary details failed to saved! $addPlaceDiary", Toast.LENGTH_SHORT).show()
+                        }
                     }else{
-                        Toast.makeText(this, "The place diary details failed to insert! $addPlaceDiary", Toast.LENGTH_SHORT).show()
+                        val updatePlaceDiary = dbHelper.updatePlaceDiary(placeDiaryModel)
+                        if (updatePlaceDiary > 0){
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }else{
+                            Toast.makeText(this, "The place diary details failed to update!", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    finish()
                 }
             }
         }

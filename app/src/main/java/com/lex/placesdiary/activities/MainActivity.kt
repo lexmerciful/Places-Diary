@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lex.placesdiary.adapters.PlacesDiaryAdapter
 import com.lex.placesdiary.database.DatabaseHelper
 import com.lex.placesdiary.databinding.ActivityMainBinding
 import com.lex.placesdiary.models.PlacesDiaryModel
+import com.lex.placesdiary.utils.SwipeToDeleteCallback
+import com.lex.placesdiary.utils.SwipeToEditCallback
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,10 +53,46 @@ class MainActivity : AppCompatActivity() {
 
         val placesAdapter = PlacesDiaryAdapter(this, placesDiaryList)
         binding?.rvPlaceDiaryList?.adapter = placesAdapter
+
+        placesAdapter.setOnClickListener(object : PlacesDiaryAdapter.OnClickListener{
+            override fun onClick(position: Int, model: PlacesDiaryModel) {
+                val intent = Intent(this@MainActivity, PlacesDiaryDetailsActivity::class.java)
+                intent.putExtra(EXTRA_PLACE_DETAILS, model)
+
+                startActivity(intent)
+            }
+        })
+
+        val editSwipeHandler = object : SwipeToEditCallback(this){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = binding?.rvPlaceDiaryList?.adapter as PlacesDiaryAdapter
+                adapter.NotifyEditItem(this@MainActivity, viewHolder.absoluteAdapterPosition, ADD_PLACE_ACTIVITY_REQUEST_CODE)
+            }
+        }
+
+        val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
+        editItemTouchHelper.attachToRecyclerView(binding?.rvPlaceDiaryList)
+
+        val deleteSwipeHandler = object : SwipeToDeleteCallback(this){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = binding?.rvPlaceDiaryList?.adapter as PlacesDiaryAdapter
+                adapter.removeAt(viewHolder.absoluteAdapterPosition)
+
+                getPlacesDiaryListFromDB()
+            }
+        }
+
+        val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+        deleteItemTouchHelper.attachToRecyclerView(binding?.rvPlaceDiaryList)
     }
 
     override fun onResume() {
         super.onResume()
         getPlacesDiaryListFromDB()
+    }
+
+    companion object {
+        var EXTRA_PLACE_DETAILS = "extra_place_details"
+        var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
     }
 }

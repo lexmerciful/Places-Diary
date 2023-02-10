@@ -23,4 +23,13 @@
     <dimen name="item_edittext_date_textSize">10sp</dimen>
     <dimen name="cardview_item_contentPadding">10dp</dimen>
     <dimen name="layout_places_diary_rv_item_marginBottom">5dp</dimen>
+    <dimen name="details_view_image_height_size">250dp</dimen>
+    <dimen name="details_edittext_description_margin">8dp</dimen>
+    <dimen name="details_edittext_description_textSize">16sp</dimen>
+    <dimen name="details_edittext_location_textSize">18sp</dimen>
+    <dimen name="details_edittext_location_marginTop">16dp</dimen>
+    <dimen name="details_edittext_location_marginStartEnd">8dp</dimen>
+    <dimen name="details_edittext_date_margin">5dp</dimen>
+    <dimen name="details_edittext_date_textSize">14sp</dimen>
+    <dimen name="details_view_image_max_height_size">350dp</dimen>
 </resources>

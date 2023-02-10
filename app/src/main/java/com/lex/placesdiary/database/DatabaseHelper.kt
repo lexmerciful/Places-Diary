@@ -67,6 +67,40 @@ class DatabaseHelper(context: Context):SQLiteOpenHelper(context,DATABASE_NAME, n
         return success
     }
 
+    fun updatePlaceDiary(placesDiaryModel: PlacesDiaryModel): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(KEY_TITLE, placesDiaryModel.title)
+        contentValues.put(KEY_DESCRIPTION, placesDiaryModel.description)
+        contentValues.put(KEY_IMAGE, placesDiaryModel.image)
+        contentValues.put(KEY_DATE, placesDiaryModel.date)
+        contentValues.put(KEY_LOCATION, placesDiaryModel.location)
+        contentValues.put(KEY_LATITUDE, placesDiaryModel.latitude)
+        contentValues.put(KEY_LONGITUDE, placesDiaryModel.longitude)
+
+        // Updating Row
+        val success = db.update(TABLE_PLACES_DIARY, contentValues,
+            KEY_ID + "=" + placesDiaryModel.id, null)
+
+        db.close()
+        return success
+    }
+
+    fun deletePlaceDiary(placesDiaryModel: PlacesDiaryModel): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(KEY_ID, placesDiaryModel.id)
+
+        // Deleting Row
+        val success = db.delete(TABLE_PLACES_DIARY,
+            KEY_ID + "=" + placesDiaryModel.id, null)
+
+        db.close()
+        return success
+    }
+
     fun getPlaceDiaryList():ArrayList<PlacesDiaryModel>{
         val placesDiaryList:ArrayList<PlacesDiaryModel> = ArrayList<PlacesDiaryModel>()
         val selectQuery = "SELECT * FROM $TABLE_PLACES_DIARY"

@@ -18,8 +18,9 @@
         android:theme="@style/Theme.PlacesDiary"
         tools:targetApi="31">
         <activity
-            android:name=".PlacesDiaryDetailsActivity"
-            android:exported="false" />
+            android:name=".activities.PlacesDiaryDetailsActivity"
+            android:exported="false"
+            android:theme="@style/CustomNoActionBarTheme"/>
         <activity
             android:name=".activities.AddPlaceDiaryActivity"
             android:exported="false"

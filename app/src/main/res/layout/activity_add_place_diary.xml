@@ -7,7 +7,7 @@
     tools:context=".activities.AddPlaceDiaryActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarPlaceDetails"
+        android:id="@+id/toolbarAddPlace"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/toolbarPlaceDetails"
+        app:layout_constraintTop_toBottomOf="@id/toolbarAddPlace"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
